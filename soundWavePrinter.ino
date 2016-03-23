@@ -54,8 +54,6 @@ void loop() {
       oldPosition = newPosition;
     }
   }
-
-  //calibrateSoundwavePrinter();
   
   readSoundWaveSample();
   
@@ -138,29 +136,6 @@ void readSoundWaveSample () {
   
   Serial.println("done reading");
   amountOfSoundSamples = counter;
-}
-
-void calibrateSoundwavePrinter () {
-  Serial.println("start calibration");
-  
-  int maxR = 0;
-  int minR = 4096;
-  long totalCal = 0;
-  int calRead;
-  for (int g = 0; g < calibrationSamples; g++) {
-    calRead = analogRead(microphonePin);
-    if (calRead > maxR) {
-      maxR = calRead;
-    }
-    if (calRead < minR) {
-      minR = calRead;
-    }
-    totalCal = totalCal + calRead;
-    delayMicroseconds(40);
-  }
-  calDif = ((maxR - minR)/2)+ 10;
-  calMid = totalCal/calibrationSamples;
-  Serial.println("finished calibrating");
 }
 
 // Input a value 0 to 255 to get a color value.
