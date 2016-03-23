@@ -8,14 +8,20 @@
 
  */
 #include <Adafruit_NeoPixel.h>
-Adafruit_NeoPixel strip = Adafruit_NeoPixel(16, 6, NEO_GRB + NEO_KHZ800);
-
 #include <Encoder.h>
-Encoder myEnc(7, 8);
+ 
+#define LED_STRIP 16
+#define LED_PIN 6
 
-const int microphonePin = A0;
-const int stepsPerMeter = 340;
-const int calibrationSamples = 400;
+#define ENCODER_PIN_1 7
+#define ENCODER_PIN_2 8
+
+#define MICROPHONE_PIN A0
+#define STEPS_METER 340
+
+
+Adafruit_NeoPixel strip = Adafruit_NeoPixel(LED_STRIP, LED_PIN, NEO_GRB + NEO_KHZ800);
+Encoder myEnc(ENCODER_PIN_1, ENCODER_PIN_2);
 
 uint16_t sensorValue = 0;
 int soundSampleArray[200];
@@ -65,13 +71,13 @@ void loop() {
   
   myEnc.write(0);
   oldPosition = 0;
-  while(oldPosition < stepsPerMeter) {
+  while(oldPosition < STEPS_METER) {
     long newPosition = myEnc.read();
     if (newPosition != oldPosition) {
       oldPosition = newPosition;
       
-      int myArrayPos = map(newPosition, 0, stepsPerMeter, 0, amountOfSoundSamples);
-      int rainbowPos = map(newPosition, 0, stepsPerMeter, 0, 255);
+      int myArrayPos = map(newPosition, 0, STEPS_METER, 0, amountOfSoundSamples);
+      int rainbowPos = map(newPosition, 0, STEPS_METER, 0, 255);
       
       int outputValue = map(soundSampleArray[myArrayPos], calMid-calDif, calMid+calDif, 0, strip.numPixels());
       
@@ -116,7 +122,7 @@ void readSoundWaveSample () {
   unsigned int startCounting = micros() + 2915;
   int counter = 0;
   while(micros() < startCounting ){
-    calRead = analogRead(microphonePin);
+    calRead = analogRead(MICROPHONE_PIN);
     soundSampleArray[counter] = calRead;
 
     if (calRead > maxR) {
